@@ -1,0 +1,33 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "Agora Viewport Client",
+	"Description": "Custom Viewport Client that shows some information on your Game Viewport",
+	"Category": "Satheesh",
+	"CreatedBy": "Satheesh Pv (ryanjon2040)",
+	"CreatedByURL": "https://www.patreon.com/ryanjon2040",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"SupportURL": "",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "AgoraViewportClient",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"WhitelistPlatforms": [
+				"Win64",
+				"Win32",
+				"Mac",
+				"Android",
+				"IOS",
+				"PS4",
+				"XboxOne"
+			]
+		}
+	]
+}
