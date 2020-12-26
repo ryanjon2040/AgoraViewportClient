@@ -8,7 +8,7 @@ public class AgoraViewportClient : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
-		PublicDependencyModuleNames.AddRange(new string[] { "Core" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "DeveloperSettings" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "CoreUObject", "Engine", "Slate", "SlateCore", "RHI" } );
 	}
 }
