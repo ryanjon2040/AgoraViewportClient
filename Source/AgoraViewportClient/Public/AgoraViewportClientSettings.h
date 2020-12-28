@@ -67,6 +67,33 @@ private:
 	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client", meta = (EditCondition = "bEnable"))
 	uint8 bAddBuiltWithEngineVersionToCreatedBy : 1;
 
+	UPROPERTY(Config, EditAnywhere, Category="Agora Viewport Client", meta = (EditCondition = "bEnable"))
+	uint8 bAddSystemInfo : 1;
+
+	UPROPERTY(VisibleAnywhere, Category="Agora Viewport Client")
+	FText SystemInfo;
+
+	UPROPERTY(Config, EditAnywhere, Category="Agora Viewport Client", meta = (EditCondition = "bAddSystemInfo && bEnable"))
+	TEnumAsByte<EHorizontalAlignment> SystemInfoHorizontalAlignment;
+
+	UPROPERTY(Config, EditAnywhere, Category="Agora Viewport Client", meta = (EditCondition = "bAddSystemInfo && bEnable"))
+	TEnumAsByte<EVerticalAlignment> SystemInfoVerticalAlignment;
+
+	UPROPERTY(Config, EditAnywhere, Category="Agora Viewport Client", meta = (EditCondition = "bAddSystemInfo && bEnable"))
+	FIntPoint SystemInfoPadding;
+
+	UPROPERTY(Config, EditAnywhere, Category="Agora Viewport Client", meta = (EditCondition = "bAddSystemInfo && bEnable"))
+	FLinearColor SystemInfoColor;
+
+	UPROPERTY(Config, EditAnywhere, Category="Agora Viewport Client", meta = (EditCondition = "bAddSystemInfo && bEnable"))
+	FLinearColor SystemInfoShadowColor;
+
+	UPROPERTY(Config, EditAnywhere, Category="Agora Viewport Client", meta = (EditCondition = "bAddSystemInfo && bEnable"))
+	FVector2D SystemInfoShadowOffset;
+
+	UPROPERTY(Config, EditAnywhere, Category="Agora Viewport Client", meta = (EditCondition = "bAddSystemInfo && bEnable"))
+	int32 SystemInfoFontSize;
+
 	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client", meta = (EditCondition = "bEnable"))
 	FAgoraViewportText TitleText;
 
@@ -114,6 +141,14 @@ public:
 		
 		Args.Add(TEXT("GpuDriver"), FText::FromString(GPUDriverInfo.UserDriverVersion));
 		Args.Add(TEXT("RHI"), FText::FromString(FHardwareInfo::GetHardwareInfo(NAME_RHI)));
+
+		bAddSystemInfo = true;
+		SystemInfo = FText::Format(NSLOCTEXT("Agora", "AgoraViewportClientSystemDetails", "{CpuBrand} ({CpuCores} Cores)\n{GpuBrand} ({RHI})\nDriver: {GpuDriver}"), Args);
+		SystemInfoVerticalAlignment = VAlign_Bottom;
+		SystemInfoHorizontalAlignment = HAlign_Right;
+		SystemInfoPadding = FIntPoint(10);
+		SystemInfoColor = FLinearColor(0.8, 0.8f, 0.8f, 0.2f);
+		SystemInfoFontSize = 18;
 	}
 
 	static FORCEINLINE const UAgoraViewportClientSettings* Get()
@@ -137,5 +172,20 @@ public:
 		Args.Add(TEXT("UnrealEngineVersion"), FText::FromString(FString(ENGINE_VERSION_STRING)));
 		static const FText BuiltText = FText::Format(NSLOCTEXT("Agora", "AgoraViewportClientEngineVersion", "Built using Unreal Engine {UnrealEngineVersion}"), Args);
 		return BuiltText;
+	}
+	
+	FORCEINLINE FAgoraViewportText GetSystemDetails() const
+	{
+		FAgoraViewportText SystemDetails;
+		SystemDetails.bEnabled = bAddSystemInfo;
+		SystemDetails.Color = SystemInfoColor;
+		SystemDetails.Padding = SystemInfoPadding;
+		SystemDetails.Text = SystemInfo;
+		SystemDetails.FontSize = SystemInfoFontSize;
+		SystemDetails.HorizontalAlignment = SystemInfoHorizontalAlignment;
+		SystemDetails.ShadowColor = SystemInfoShadowColor;
+		SystemDetails.ShadowOffset = SystemInfoShadowOffset;
+		SystemDetails.VerticalAlignment = SystemInfoVerticalAlignment;
+		return SystemDetails;
 	}
 };
