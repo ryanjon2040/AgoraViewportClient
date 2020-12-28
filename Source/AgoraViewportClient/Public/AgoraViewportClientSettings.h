@@ -73,9 +73,6 @@ private:
 	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client", meta = (EditCondition = "bEnable"))
 	FAgoraViewportText CreatedBy;
 
-	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client", meta = (EditCondition = "bEnable"))
-	FAgoraViewportText SystemDetails;
-
 public:
 
 	UAgoraViewportClientSettings()
@@ -117,11 +114,6 @@ public:
 		
 		Args.Add(TEXT("GpuDriver"), FText::FromString(GPUDriverInfo.UserDriverVersion));
 		Args.Add(TEXT("RHI"), FText::FromString(FHardwareInfo::GetHardwareInfo(NAME_RHI)));
-		SystemDetails.Text = FText::Format(NSLOCTEXT("Agora", "AgoraViewportClientSystemDetails", "{CpuBrand} ({CpuCores} Cores)\n{GpuBrand} ({RHI})\nDriver: {GpuDriver}"), Args);
-		SystemDetails.VerticalAlignment = VAlign_Bottom;
-		SystemDetails.HorizontalAlignment = HAlign_Right;
-		SystemDetails.Padding = FIntPoint(10);
-		SystemDetails.FontSize = 18;
 	}
 
 	static FORCEINLINE const UAgoraViewportClientSettings* Get()
@@ -138,8 +130,6 @@ public:
 	FORCEINLINE bool IsEnabled() const							{ return bEnable; }
 	FORCEINLINE FAgoraViewportText GetTitle() const				{ return TitleText; }
 	FORCEINLINE FAgoraViewportText GetCreatedBy() const			{ return CreatedBy; }
-	FORCEINLINE FAgoraViewportText GetSystemDetails() const		{ return SystemDetails; }
-
 	FORCEINLINE bool AddBuiltWithUE4VersionToCreatedBy() const	{ return bAddBuiltWithEngineVersionToCreatedBy; }
 	static FORCEINLINE FText GetUnrealEngineVersionText()
 	{
