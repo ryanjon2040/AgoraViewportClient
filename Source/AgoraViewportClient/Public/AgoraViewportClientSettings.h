@@ -42,7 +42,7 @@ struct FAgoraViewportText
 	UPROPERTY(EditAnywhere, Category="Agora Viewport Text", meta = (EditCondition = "bEnabled"))
 	int32 FontSize;
 
-	FAgoraViewportText()
+	FAgoraViewportText(): HorizontalAlignment(HAlign_Center), VerticalAlignment(VAlign_Center)
 	{
 		bEnabled = true;
 		Padding = FIntPoint(10);
