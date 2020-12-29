@@ -10,6 +10,7 @@
 #include "HardwareInfo.h"
 #include "GenericPlatform/GenericPlatformDriver.h"
 #include "Launch/Resources/Version.h"
+#include "Math/IntPoint.h"
 #include "AgoraViewportClientSettings.generated.h"
 
 USTRUCT(BlueprintType)
@@ -47,7 +48,7 @@ struct FAgoraViewportText
 	FAgoraViewportText(): HorizontalAlignment(HAlign_Center), VerticalAlignment(VAlign_Center)
 	{
 		bEnabled = true;
-		Padding = FIntPoint(10);
+		Padding = FIntPoint(10, 10);
 		Color = FLinearColor(0.8, 0.8f, 0.8f, 0.2f);
 		ShadowColor = FLinearColor(0.f, 0.f, 0.f, 0.0);
 		ShadowOffset = FVector2D::ZeroVector;
@@ -118,7 +119,7 @@ public:
 		CreatedBy.Text = NSLOCTEXT("Agora", "AgoraViewportClientCreatedBy", "Created by <YOUR_NAME_HERE>");
 		CreatedBy.VerticalAlignment = VAlign_Bottom;
 		CreatedBy.HorizontalAlignment = HAlign_Left;
-		CreatedBy.Padding = FIntPoint(10);
+		CreatedBy.Padding = FIntPoint(10, 10);
 		CreatedBy.FontSize = 16;
 
 		FFormatNamedArguments Args;
@@ -148,7 +149,7 @@ public:
 		SystemInfo = FText::Format(NSLOCTEXT("Agora", "AgoraViewportClientSystemDetails", "{CpuBrand} ({CpuCores} Cores)\n{GpuBrand} ({RHI})\nDriver: {GpuDriver}"), Args);
 		SystemInfoVerticalAlignment = VAlign_Bottom;
 		SystemInfoHorizontalAlignment = HAlign_Right;
-		SystemInfoPadding = FIntPoint(10);
+		SystemInfoPadding = FIntPoint(10, 10);
 		SystemInfoColor = FLinearColor(0.8, 0.8f, 0.8f, 0.2f);
 		SystemInfoFontSize = 18;
 	}
