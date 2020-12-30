@@ -4,7 +4,10 @@
 
 [![Support Server](https://img.shields.io/discord/613390075816050698.svg?color=7289da&label=Agora&logo=discord&style=flat-square)](https://discord.gg/KCputqnKh5) [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/mindfreak2040@gmail.com)
 
-[![HitCount](http://hits.dwyl.com/ryanjon2040/AgoraViewportClient.svg)](http://hits.dwyl.com/ryanjon2040/AgoraViewportClient) [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ryanjon2040/AgoraViewportClient/pulls) ![GitHub](https://img.shields.io/github/license/ryanjon2040/AgoraViewportClient?label=License) [<img src="https://img.shields.io/twitter/follow/ryanjon2040?style=social">](http://twitter.com/ryanjon2040)
+[![HitCount](http://hits.dwyl.com/ryanjon2040/AgoraViewportClient.svg)](http://hits.dwyl.com/ryanjon2040/AgoraViewportClient) 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/ryanjon2040/AgoraViewportClient/pulls)
+![GitHub](https://img.shields.io/github/license/ryanjon2040/AgoraViewportClient?label=License&logo=github)
+[<img src="https://img.shields.io/twitter/follow/ryanjon2040?style=social">](http://twitter.com/ryanjon2040)
 
 A simple plugin that acts as an overlay watermark widget.
 
