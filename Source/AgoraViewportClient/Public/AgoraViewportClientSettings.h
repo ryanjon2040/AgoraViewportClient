@@ -21,7 +21,7 @@ struct FAgoraViewportText
 	UPROPERTY(EditAnywhere, Category="Agora Viewport Text")
 	bool bEnabled;
 
-	UPROPERTY(EditAnywhere, Category="Agora Viewport Text", meta = (EditCondition = "bEnabled"))
+	UPROPERTY(EditAnywhere, Category="Agora Viewport Text", meta = (EditCondition = "bEnabled", MultiLine = "true"))
 	FText Text;
 
 	UPROPERTY(EditAnywhere, Category="Agora Viewport Text", meta = (EditCondition = "bEnabled"))
