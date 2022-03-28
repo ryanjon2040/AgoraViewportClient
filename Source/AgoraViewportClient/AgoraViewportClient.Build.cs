@@ -16,6 +16,6 @@ public class AgoraViewportClient : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { "Core" });
 #endif
 		
-		PrivateDependencyModuleNames.AddRange(new string[] { "CoreUObject", "Engine", "Slate", "SlateCore", "RHI" } );
+		PrivateDependencyModuleNames.AddRange(new string[] { "CoreUObject", "Engine", "Slate", "SlateCore", "RHI", "InputCore" } );
 	}
 }

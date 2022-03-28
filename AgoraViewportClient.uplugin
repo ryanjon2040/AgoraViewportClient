@@ -23,8 +23,7 @@
 				"Win64",
 				"Mac",
 				"Android",
-				"IOS",
-				"PS4"
+				"IOS"
 			]
 		}
 	]
