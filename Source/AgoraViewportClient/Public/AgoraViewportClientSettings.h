@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-
 #include "Engine/DeveloperSettings.h"
 #include "HardwareInfo.h"
 #include "GenericPlatform/GenericPlatformDriver.h"
@@ -56,7 +54,7 @@ struct FAgoraViewportText
 	}
 };
 
-UCLASS(config = AgoraViewportClient, defaultconfig)
+UCLASS(config = Game, defaultconfig)
 class AGORAVIEWPORTCLIENT_API UAgoraViewportClientSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
