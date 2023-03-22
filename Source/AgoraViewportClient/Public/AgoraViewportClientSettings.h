@@ -9,6 +9,7 @@
 #include "GenericPlatform/GenericPlatformDriver.h"
 #include "Launch/Resources/Version.h"
 #include "Math/IntPoint.h"
+#include "Runtime/SlateCore/Public/Styling/CoreStyle.h"
 #include "AgoraViewportClientSettings.generated.h"
 
 USTRUCT(BlueprintType)
@@ -40,17 +41,34 @@ struct FAgoraViewportText
 	UPROPERTY(EditAnywhere, Category="Agora Viewport Text", meta = (EditCondition = "bEnabled"))
 	FVector2D ShadowOffset;
 
+private:
 	UPROPERTY(EditAnywhere, Category="Agora Viewport Text", meta = (EditCondition = "bEnabled"))
-	int32 FontSize;
+	FSlateFontInfo FontInfo;
 
-	FAgoraViewportText(): HorizontalAlignment(HAlign_Center), VerticalAlignment(VAlign_Center)
+public:
+
+	FORCEINLINE void SetFontInfo(const FSlateFontInfo& NewFontInfo)
+	{
+		FontInfo = NewFontInfo;
+	}
+
+	FORCEINLINE FSlateFontInfo GetFontInfo() const
+	{
+		if (!IsValid(FontInfo.FontObject))
+		{
+			return FCoreStyle::GetDefaultFontStyle("BoldCondensed", FontInfo.Size);
+		}
+
+		return FontInfo;
+	}
+
+	FAgoraViewportText() : HorizontalAlignment(HAlign_Center), VerticalAlignment(VAlign_Center)
 	{
 		bEnabled = true;
 		Padding = FIntPoint(10, 10);
 		Color = FLinearColor(0.8, 0.8f, 0.8f, 0.2f);
 		ShadowColor = FLinearColor(0.f, 0.f, 0.f, 0.0);
 		ShadowOffset = FVector2D::ZeroVector;
-		FontSize = 14;
 	}
 };
 
@@ -58,8 +76,6 @@ UCLASS(config = Game, defaultconfig)
 class AGORAVIEWPORTCLIENT_API UAgoraViewportClientSettings : public UDeveloperSettings
 {
 	GENERATED_BODY()
-	
-private:
 
 	/** Enable or disable features.*/
 	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client")
@@ -93,7 +109,7 @@ private:
 	FVector2D SystemInfoShadowOffset;
 
 	UPROPERTY(Config, EditAnywhere, Category="Agora Viewport Client", meta = (EditCondition = "bAddSystemInfo && bEnable"))
-	int32 SystemInfoFontSize;
+	FSlateFontInfo SystemFontInfo;
 
 	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client", meta = (EditCondition = "bEnable"))
 	FAgoraViewportText TitleText;
@@ -112,13 +128,13 @@ public:
 		TitleText.HorizontalAlignment = HAlign_Center;
 		TitleText.VerticalAlignment = VAlign_Top;
 		TitleText.Padding = FIntPoint(10, 100);
-		TitleText.FontSize = 24;
+		TitleText.SetFontInfo(FCoreStyle::GetDefaultFontStyle("BoldCondensed", 24)); // Style from SlateEditorStyle.cpp @line: 4355 (as of 4.22)
 		
 		CreatedBy.Text = NSLOCTEXT("Agora", "AgoraViewportClientCreatedBy", "Created by <YOUR_NAME_HERE>");
 		CreatedBy.VerticalAlignment = VAlign_Bottom;
 		CreatedBy.HorizontalAlignment = HAlign_Left;
 		CreatedBy.Padding = FIntPoint(10, 10);
-		CreatedBy.FontSize = 16;
+		CreatedBy.SetFontInfo(FCoreStyle::GetDefaultFontStyle("BoldCondensed", 16));
 
 		FFormatNamedArguments Args;
 		static const FGPUDriverInfo GPUDriverInfo = FPlatformMisc::GetGPUDriverInfo(GRHIAdapterName);
@@ -149,7 +165,7 @@ public:
 		SystemInfoHorizontalAlignment = HAlign_Right;
 		SystemInfoPadding = FIntPoint(10, 10);
 		SystemInfoColor = FLinearColor(0.8, 0.8f, 0.8f, 0.2f);
-		SystemInfoFontSize = 18;
+		SystemFontInfo = FCoreStyle::GetDefaultFontStyle("BoldCondensed", 18);
 	}
 
 	static FORCEINLINE const UAgoraViewportClientSettings* Get()
@@ -182,7 +198,7 @@ public:
 		SystemDetails.Color = SystemInfoColor;
 		SystemDetails.Padding = SystemInfoPadding;
 		SystemDetails.Text = SystemInfo;
-		SystemDetails.FontSize = SystemInfoFontSize;
+		SystemDetails.SetFontInfo(SystemFontInfo);
 		SystemDetails.HorizontalAlignment = SystemInfoHorizontalAlignment;
 		SystemDetails.ShadowColor = SystemInfoShadowColor;
 		SystemDetails.ShadowOffset = SystemInfoShadowOffset;
