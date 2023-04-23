@@ -14,6 +14,7 @@ void SAgoraWatermarkCompoundWidget::Construct(const FArguments& InArgs)
 	const UAgoraViewportClientSettings* AgoraViewportClientSettings = UAgoraViewportClientSettings::Get();
 	const FAgoraViewportText TitleText = AgoraViewportClientSettings->GetTitle();
 	const FAgoraViewportText CreatedBy = AgoraViewportClientSettings->GetCreatedBy();
+	const FAgoraViewportText GitText = AgoraViewportClientSettings->GetGitText();
 	const FAgoraViewportText SystemDetails = AgoraViewportClientSettings->GetSystemDetails();
 
 	FFormatNamedArguments Args;
@@ -51,6 +52,20 @@ void SAgoraWatermarkCompoundWidget::Construct(const FArguments& InArgs)
 			.ShadowColorAndOpacity(CreatedBy.ShadowColor)
 			.ShadowOffset(CreatedBy.ShadowOffset)
 			.Text(TAttribute<FText>(CreatedByText))
+		]
+
+		+ SOverlay::Slot()
+		.Padding(GitText.Padding.X, GitText.Padding.Y)
+		.VAlign(GitText.VerticalAlignment)
+		.HAlign(GitText.HorizontalAlignment)
+		[
+			SNew(STextBlock)
+			.Visibility(GitText.bEnabled ? EVisibility::HitTestInvisible : EVisibility::Collapsed)
+			.Font(GitText.GetFontInfo())
+			.ColorAndOpacity(GitText.Color)
+			.ShadowColorAndOpacity(GitText.ShadowColor)
+			.ShadowOffset(GitText.ShadowOffset)
+			.Text(TAttribute<FText>(GitText.Text))
 		]
 
 		+ SOverlay::Slot()

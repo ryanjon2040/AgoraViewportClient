@@ -5,11 +5,7 @@
 #pragma once
 
 #include "Engine/DeveloperSettings.h"
-#include "HardwareInfo.h"
-#include "GenericPlatform/GenericPlatformDriver.h"
-#include "Launch/Resources/Version.h"
 #include "Math/IntPoint.h"
-#include "Runtime/SlateCore/Public/Styling/CoreStyle.h"
 #include "AgoraViewportClientSettings.generated.h"
 
 USTRUCT(BlueprintType)
@@ -72,6 +68,8 @@ public:
 	}
 };
 
+using FOnGitInfoUpdated = TDelegate<void(const bool bSuccess, const FString& BranchString, const FString& CommitString)>;
+
 UCLASS(config = Game, defaultconfig)
 class AGORAVIEWPORTCLIENT_API UAgoraViewportClientSettings : public UDeveloperSettings
 {
@@ -117,56 +115,53 @@ class AGORAVIEWPORTCLIENT_API UAgoraViewportClientSettings : public UDeveloperSe
 	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client", meta = (EditCondition = "bEnable"))
 	FAgoraViewportText CreatedBy;
 
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable"))
+	bool bShowGitInformation;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	bool bShowBranchName;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	bool bShowCommitHash;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	bool bShowBuildTime;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation", UIMin = 7, ClampMin = 7, UIMax = 40, ClampMax = 40))
+	uint8 CommitHashLength;
+
+	UPROPERTY(VisibleAnywhere, Category = "Agora Viewport Client - Git")
+	FText GitText;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	TEnumAsByte<EHorizontalAlignment> GitHorizontalAlignment;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	TEnumAsByte<EVerticalAlignment> GitVerticalAlignment;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	FIntPoint GitPadding;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	FLinearColor GitColor;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	FLinearColor GitShadowColor;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	FVector2D GitShadowOffset;
+
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	FSlateFontInfo GitFontInfo;
+
+	TOptional<FString> BranchName;
+	TOptional<FString> CommitHash;
+
+	bool bIsRefreshingGitDetails;
+
 public:
 
-	UAgoraViewportClientSettings()
-	{
-		bEnable = true;
-		bAddBuiltWithEngineVersionToCreatedBy = true;
-		
-		TitleText.Text = NSLOCTEXT("Agora", "AgoraViewportClientTitle", "WORK IN PROGRESS - DOES NOT REPRESENT FINAL LOOK OF THE GAME");
-		TitleText.HorizontalAlignment = HAlign_Center;
-		TitleText.VerticalAlignment = VAlign_Top;
-		TitleText.Padding = FIntPoint(10, 100);
-		TitleText.SetFontInfo(FCoreStyle::GetDefaultFontStyle("BoldCondensed", 24)); // Style from SlateEditorStyle.cpp @line: 4355 (as of 4.22)
-		
-		CreatedBy.Text = NSLOCTEXT("Agora", "AgoraViewportClientCreatedBy", "Created by <YOUR_NAME_HERE>");
-		CreatedBy.VerticalAlignment = VAlign_Bottom;
-		CreatedBy.HorizontalAlignment = HAlign_Left;
-		CreatedBy.Padding = FIntPoint(10, 10);
-		CreatedBy.SetFontInfo(FCoreStyle::GetDefaultFontStyle("BoldCondensed", 16));
-
-		FFormatNamedArguments Args;
-		static const FGPUDriverInfo GPUDriverInfo = FPlatformMisc::GetGPUDriverInfo(GRHIAdapterName);
-#if PLATFORM_WINDOWS
-		Args.Add(TEXT("CpuBrand"), FText::FromString(FString(FWindowsPlatformMisc::GetCPUBrand())));
-		Args.Add(TEXT("CpuCores"), FText::AsNumber(FWindowsPlatformMisc::NumberOfCores()));
-		Args.Add(TEXT("GpuBrand"), FText::FromString(FWindowsPlatformMisc::GetPrimaryGPUBrand()));
-#elif PLATFORM_MAC
-		Args.Add(TEXT("CpuBrand"), FText::FromString(FString(FMacPlatformMisc::GetCPUBrand())));
-		Args.Add(TEXT("CpuCores"), FText::AsNumber(FMacPlatformMisc::NumberOfCores()));
-		Args.Add(TEXT("GpuBrand"), FText::FromString(FMacPlatformMisc::GetPrimaryGPUBrand()));
-#elif PLATFORM_LINUX
-		Args.Add(TEXT("CpuBrand"), FText::FromString(FString(FLinuxPlatformMisc::GetCPUBrand())));
-		Args.Add(TEXT("CpuCores"), FText::AsNumber(FLinuxPlatformMisc::NumberOfCores()));
-		Args.Add(TEXT("GpuBrand"), FText::FromString(FLinuxPlatformMisc::GetPrimaryGPUBrand()));
-#else
-		Args.Add(TEXT("CpuBrand"), FText::FromString(FString(FPlatformMisc::GetCPUBrand())));
-		Args.Add(TEXT("CpuCores"), FText::AsNumber(FPlatformMisc::NumberOfCores()));
-		Args.Add(TEXT("GpuBrand"), FText::FromString(FPlatformMisc::GetPrimaryGPUBrand()));
-#endif
-		
-		Args.Add(TEXT("GpuDriver"), FText::FromString(GPUDriverInfo.UserDriverVersion));
-		Args.Add(TEXT("RHI"), FText::FromString(FHardwareInfo::GetHardwareInfo(NAME_RHI)));
-
-		bAddSystemInfo = true;
-		SystemInfo = FText::Format(NSLOCTEXT("Agora", "AgoraViewportClientSystemDetails", "{CpuBrand} ({CpuCores} Cores)\n{GpuBrand} ({RHI})\nDriver: {GpuDriver}"), Args);
-		SystemInfoVerticalAlignment = VAlign_Bottom;
-		SystemInfoHorizontalAlignment = HAlign_Right;
-		SystemInfoPadding = FIntPoint(10, 10);
-		SystemInfoColor = FLinearColor(0.8, 0.8f, 0.8f, 0.2f);
-		SystemFontInfo = FCoreStyle::GetDefaultFontStyle("BoldCondensed", 18);
-	}
+	UAgoraViewportClientSettings();
 
 	static FORCEINLINE const UAgoraViewportClientSettings* Get()
 	{
@@ -174,7 +169,14 @@ public:
 		return ProxyDevSettings;
 	}
 
+	static FORCEINLINE UAgoraViewportClientSettings* GetMutable()
+	{
+		UAgoraViewportClientSettings* ProxyDevSettings = CastChecked<UAgoraViewportClientSettings>(UAgoraViewportClientSettings::StaticClass()->GetDefaultObject());
+		return ProxyDevSettings;
+	}
+
 #if WITH_EDITOR
+	virtual void PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEvent) override;
 	virtual FName GetCategoryName() const override final { return TEXT("Agora"); }
 	virtual FText GetSectionText() const override final { return FText::FromString("Agora Viewport Client"); }
 #endif
@@ -205,4 +207,32 @@ public:
 		SystemDetails.VerticalAlignment = SystemInfoVerticalAlignment;
 		return SystemDetails;
 	}
+	
+	FORCEINLINE FAgoraViewportText GetGitText() const
+	{
+		FAgoraViewportText GitDetails;
+		GitDetails.bEnabled = bShowGitInformation;
+		GitDetails.Color = GitColor;
+		GitDetails.Padding = GitPadding;
+		GitDetails.Text = GitText;
+		GitDetails.SetFontInfo(GitFontInfo);
+		GitDetails.HorizontalAlignment = GitHorizontalAlignment;
+		GitDetails.VerticalAlignment = GitVerticalAlignment;
+		GitDetails.ShadowColor = GitShadowColor;
+		GitDetails.ShadowOffset = GitShadowOffset;
+		return GitDetails;
+	}
+
+	UFUNCTION(BlueprintPure, Category = AgoraViewportClient)
+	static bool GetProjectGitBranchName(FText& OutBranchName);
+
+	UFUNCTION(BlueprintPure, Category = AgoraViewportClient)
+	static bool GetProjectGitCommitHash(FText& OutCommitHash);
+
+	void RefreshGitDetails();
+
+private:
+
+	static bool Internal_ExecGit(const TCHAR* Params, FString& OutStdOut, FString& OutStdErr);
+	static void Internal_SetGit(FOnGitInfoUpdated OnGitInfoUpdated);
 };
