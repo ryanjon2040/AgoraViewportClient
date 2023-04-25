@@ -25,7 +25,7 @@ UAgoraViewportClientSettings::UAgoraViewportClientSettings()
 	CreatedBy.Padding = FIntPoint(10, 10);
 	CreatedBy.SetFontInfo(FCoreStyle::GetDefaultFontStyle("BoldCondensed", 16));
 
-	bShowGitInformation = bShowBranchName = bShowCommitHash = bShowBuildTime = true;
+	bShowGitInformation = bShowBranchName = bShowCommitHash = bShowBuildTime = bShowTotalCommitsAsChangelist = true;
 	CommitHashLength = 7;
 	bIsRefreshingGitDetails = false;
 	GitVerticalAlignment = VAlign_Bottom;
@@ -75,10 +75,12 @@ void UAgoraViewportClientSettings::PostEditChangeProperty(FPropertyChangedEvent&
 	const auto CommitMember = GET_MEMBER_NAME_CHECKED(UAgoraViewportClientSettings, bShowCommitHash);
 	const auto BuildTimeMember = GET_MEMBER_NAME_CHECKED(UAgoraViewportClientSettings, bShowBuildTime);
 	const auto CommitLengthMember = GET_MEMBER_NAME_CHECKED(UAgoraViewportClientSettings, CommitHashLength);
+	const auto ShowTotalCommitsAsChangelist = GET_MEMBER_NAME_CHECKED(UAgoraViewportClientSettings, bShowTotalCommitsAsChangelist);
 	if (PropertyChangedEvent.GetPropertyName() == BranchMember
 		|| PropertyChangedEvent.GetPropertyName() == CommitMember
 		|| PropertyChangedEvent.GetPropertyName() == BuildTimeMember
-		|| PropertyChangedEvent.GetPropertyName() == CommitLengthMember)
+		|| PropertyChangedEvent.GetPropertyName() == CommitLengthMember
+		|| PropertyChangedEvent.GetPropertyName() == ShowTotalCommitsAsChangelist)
 	{
 		RefreshGitDetails();
 	}
@@ -113,6 +115,19 @@ bool UAgoraViewportClientSettings::GetProjectGitCommitHash(FText& OutCommitHash)
 	return false;
 }
 
+bool UAgoraViewportClientSettings::GetProjectGitCommitCount(FText& OutCommitCount)
+{
+	const auto Settings = Get();
+	if (Settings->CommitCount.IsSet())
+	{
+		OutCommitCount = FText::FromString(Settings->CommitCount.GetValue());
+		return true;
+	}
+
+	OutCommitCount = FText();
+	return false;
+}
+
 void UAgoraViewportClientSettings::RefreshGitDetails()
 {
 	if (bIsRefreshingGitDetails)
@@ -124,9 +139,10 @@ void UAgoraViewportClientSettings::RefreshGitDetails()
 	GitText = INVTEXT("Refreshing. Please wait...");
 	BranchName.Reset();
 	CommitHash.Reset();
+	CommitCount.Reset();
 	
 	FOnGitInfoUpdated OnGitInfoUpdated;
-	OnGitInfoUpdated.BindLambda([&](const bool bSuccess, const FString& BranchString, const FString& CommitString)
+	OnGitInfoUpdated.BindLambda([&](const bool bSuccess, const FString& BranchString, const FString& CommitString, const FString& CommitCountString)
 	{
 		GitText = FText();
 		if (bSuccess && bShowGitInformation)
@@ -145,6 +161,11 @@ void UAgoraViewportClientSettings::RefreshGitDetails()
 			else
 			{
 				NewGitText = FString::Printf(TEXT("%s-%s"), *BranchString, *CommitString);
+			}
+
+			if (bShowTotalCommitsAsChangelist)
+			{
+				NewGitText += FString::Printf(TEXT("-CL%s"), *CommitCountString);
 			}
 
 			if (bShowBuildTime)
@@ -186,12 +207,13 @@ void UAgoraViewportClientSettings::Internal_SetGit(FOnGitInfoUpdated OnGitInfoUp
 	static const FString SectionName = "/Script/AgoraViewportClient.AgoraViewportClientSettings";
 	static const TCHAR* CommitKey = TEXT("Commit");
 	static const TCHAR* BranchKey = TEXT("Branch");
+	static const TCHAR* CommitCountKey = TEXT("CL");
 
 #if WITH_EDITOR
 	static const FString GitDir = FPaths::Combine(FPaths::ConvertRelativePathToFull(FPaths::ProjectDir()), TEXT(".git"));
 	if (!FPaths::DirectoryExists(GitDir))
 	{
-		OnGitInfoUpdated.ExecuteIfBound(false, "", "");
+		OnGitInfoUpdated.ExecuteIfBound(false, "", "", "");
 	}
 
 	const uint8 CommitLength = Get()->CommitHashLength;
@@ -218,13 +240,23 @@ void UAgoraViewportClientSettings::Internal_SetGit(FOnGitInfoUpdated OnGitInfoUp
 			const FString BranchString = StdOut.IsEmpty() ? "invalid-branch" : StdOut;
 			StdOut.Reset();
 
+			FString CommitCountString = "0";
+			if (BranchString != "invalid-branch")
+			{
+				const FString RevList = FString::Printf(TEXT("rev-list --count %s"), *BranchString);
+				Internal_ExecGit(*RevList, StdOut, StdErr);				
+				StdOut.TrimStartAndEndInline();
+				CommitCountString = StdOut;
+			}
+
 			GConfig->SetText(*SectionName, CommitKey, FText::FromString(CommitString), IniFile);
 			GConfig->SetText(*SectionName, BranchKey, FText::FromString(BranchString), IniFile);
+			GConfig->SetText(*SectionName, CommitCountKey, FText::FromString(CommitCountString), IniFile);
 
-			AsyncTask(ENamedThreads::GameThread, [OnGitInfoUpdated, BranchString, CommitString]
+			AsyncTask(ENamedThreads::GameThread, [OnGitInfoUpdated, BranchString, CommitString, CommitCountString]
 			{
 				GetMutable()->SaveConfig(CPF_Config, *IniFile);
-				OnGitInfoUpdated.ExecuteIfBound(true, BranchString, CommitString);
+				OnGitInfoUpdated.ExecuteIfBound(true, BranchString, CommitString, CommitCountString);
 			});
 		}
 	});
@@ -234,6 +266,9 @@ void UAgoraViewportClientSettings::Internal_SetGit(FOnGitInfoUpdated OnGitInfoUp
 
 	FText CommitValue;
 	const bool bCommitFound = GConfig->GetText(*SectionName, CommitKey, CommitValue, IniFile);
-	OnGitInfoUpdated.ExecuteIfBound(bBranchFound && bCommitFound, BranchValue.ToString(), CommitValue.ToString());
+
+	FText CommitCountValue;
+	GConfig->GetText(*SectionName, CommitCountKey, CommitCountValue, IniFile);
+	OnGitInfoUpdated.ExecuteIfBound(bBranchFound && bCommitFound, BranchValue.ToString(), CommitValue.ToString(), CommitCountValue.ToString());
 #endif
 }

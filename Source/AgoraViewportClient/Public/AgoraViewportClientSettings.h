@@ -68,7 +68,7 @@ public:
 	}
 };
 
-using FOnGitInfoUpdated = TDelegate<void(const bool bSuccess, const FString& BranchString, const FString& CommitString)>;
+using FOnGitInfoUpdated = TDelegate<void(const bool bSuccess, const FString& BranchString, const FString& CommitString, const FString& CommitCountString)>;
 
 UCLASS(config = Game, defaultconfig)
 class AGORAVIEWPORTCLIENT_API UAgoraViewportClientSettings : public UDeveloperSettings
@@ -127,6 +127,9 @@ class AGORAVIEWPORTCLIENT_API UAgoraViewportClientSettings : public UDeveloperSe
 	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
 	bool bShowBuildTime;
 
+	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation"))
+	bool bShowTotalCommitsAsChangelist;
+
 	UPROPERTY(Config, EditAnywhere, Category = "Agora Viewport Client - Git", meta = (EditCondition = "bEnable && bShowGitInformation", UIMin = 7, ClampMin = 7, UIMax = 40, ClampMax = 40))
 	uint8 CommitHashLength;
 
@@ -156,6 +159,7 @@ class AGORAVIEWPORTCLIENT_API UAgoraViewportClientSettings : public UDeveloperSe
 
 	TOptional<FString> BranchName;
 	TOptional<FString> CommitHash;
+	TOptional<FString> CommitCount;
 
 	bool bIsRefreshingGitDetails;
 
@@ -228,6 +232,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = AgoraViewportClient)
 	static bool GetProjectGitCommitHash(FText& OutCommitHash);
+
+	UFUNCTION(BlueprintPure, Category = AgoraViewportClient)
+	static bool GetProjectGitCommitCount(FText& OutCommitCount);
 
 	void RefreshGitDetails();
 
