@@ -7,6 +7,17 @@
 #include "GenericPlatform/GenericPlatformDriver.h"
 #include "Launch/Resources/Version.h"
 #include "Runtime/SlateCore/Public/Styling/CoreStyle.h"
+#include "RHI/Public/RHI.h"
+
+FSlateFontInfo FAgoraViewportText::GetFontInfo() const
+{
+	if (!IsValid(FontInfo.FontObject))
+	{
+		return FCoreStyle::GetDefaultFontStyle("BoldCondensed", FontInfo.Size);
+	}
+
+	return FontInfo;
+}
 
 UAgoraViewportClientSettings::UAgoraViewportClientSettings()
 {
@@ -88,6 +99,14 @@ void UAgoraViewportClientSettings::PostEditChangeProperty(FPropertyChangedEvent&
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 }
 #endif
+
+FText UAgoraViewportClientSettings::GetUnrealEngineVersionText()
+{
+	static FFormatNamedArguments Args;
+	Args.Add(TEXT("UnrealEngineVersion"), FText::FromString(FString(ENGINE_VERSION_STRING)));
+	static const FText BuiltText = FText::Format(NSLOCTEXT("Agora", "AgoraViewportClientEngineVersion", "Built using Unreal Engine {UnrealEngineVersion}"), Args);
+	return BuiltText;
+}
 
 bool UAgoraViewportClientSettings::GetProjectGitBranchName(FText& OutBranchName)
 {

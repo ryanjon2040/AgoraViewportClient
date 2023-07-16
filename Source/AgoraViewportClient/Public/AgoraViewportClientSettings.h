@@ -48,16 +48,7 @@ public:
 		FontInfo = NewFontInfo;
 	}
 
-	FORCEINLINE FSlateFontInfo GetFontInfo() const
-	{
-		if (!IsValid(FontInfo.FontObject))
-		{
-			return FCoreStyle::GetDefaultFontStyle("BoldCondensed", FontInfo.Size);
-		}
-
-		return FontInfo;
-	}
-
+	FSlateFontInfo GetFontInfo() const;
 	FAgoraViewportText() : HorizontalAlignment(HAlign_Center), VerticalAlignment(VAlign_Center)
 	{
 		bEnabled = true;
@@ -185,17 +176,12 @@ public:
 	virtual FText GetSectionText() const override final { return FText::FromString("Agora Viewport Client"); }
 #endif
 
+	static FText GetUnrealEngineVersionText();
+
 	FORCEINLINE bool IsEnabled() const							{ return bEnable; }
 	FORCEINLINE FAgoraViewportText GetTitle() const				{ return TitleText; }
 	FORCEINLINE FAgoraViewportText GetCreatedBy() const			{ return CreatedBy; }
 	FORCEINLINE bool AddBuiltWithUE4VersionToCreatedBy() const	{ return bAddBuiltWithEngineVersionToCreatedBy; }
-	static FORCEINLINE FText GetUnrealEngineVersionText()
-	{
-		static FFormatNamedArguments Args;
-		Args.Add(TEXT("UnrealEngineVersion"), FText::FromString(FString(ENGINE_VERSION_STRING)));
-		static const FText BuiltText = FText::Format(NSLOCTEXT("Agora", "AgoraViewportClientEngineVersion", "Built using Unreal Engine {UnrealEngineVersion}"), Args);
-		return BuiltText;
-	}
 	
 	FORCEINLINE FAgoraViewportText GetSystemDetails() const
 	{

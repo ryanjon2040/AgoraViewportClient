@@ -5,6 +5,7 @@
 #include "AgoraGameViewportClient.h"
 #include "AgoraViewportClientSettings.h"
 #include "Runtime/SlateCore/Public/Styling/CoreStyle.h"
+#include "Runtime/SlateCore/Public/Widgets/SOverlay.h"
 #include "Runtime/Slate/Public/Widgets/Text/STextBlock.h"
 
 #define GET_DEFAULT_FONT(...) FCoreStyle::GetDefaultFontStyle(__VA_ARGS__)
