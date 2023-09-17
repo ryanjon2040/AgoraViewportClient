@@ -4,6 +4,7 @@
 
 #include "AgoraGameViewportClient.h"
 #include "AgoraViewportClientSettings.h"
+#include "GeneralProjectSettings.h"
 #include "Runtime/SlateCore/Public/Styling/CoreStyle.h"
 #include "Runtime/SlateCore/Public/Widgets/SOverlay.h"
 #include "Runtime/Slate/Public/Widgets/Text/STextBlock.h"
@@ -18,11 +19,14 @@ void SAgoraWatermarkCompoundWidget::Construct(const FArguments& InArgs)
 	const FAgoraViewportText GitText = AgoraViewportClientSettings->GetGitText();
 	const FAgoraViewportText SystemDetails = AgoraViewportClientSettings->GetSystemDetails();
 
+	const FString ProjectVersion = GetDefault<UGeneralProjectSettings>()->ProjectVersion;
+
 	FFormatNamedArguments Args;
 	Args.Add("CreatedBy", CreatedBy.Text);
 	Args.Add("EngineBuild", AgoraViewportClientSettings->GetUnrealEngineVersionText());
+	Args.Add("ProjectVersion", FText::FromString(ProjectVersion));
 	const FText CreatedByText = AgoraViewportClientSettings->AddBuiltWithUE4VersionToCreatedBy() ?
-		FText::Format(FText::AsCultureInvariant("{CreatedBy}\n{EngineBuild}"), Args) : CreatedBy.Text;
+		FText::Format(FText::AsCultureInvariant("{CreatedBy}\n{EngineBuild}\nProject Version: {ProjectVersion}"), Args) : CreatedBy.Text;
 
 	ChildSlot
 	[
