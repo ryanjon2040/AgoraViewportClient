@@ -5,9 +5,9 @@
 #include "AgoraViewportClientSettings.h"
 #include "HardwareInfo.h"
 #include "GenericPlatform/GenericPlatformDriver.h"
-#include "Launch/Resources/Version.h"
+#include "Runtime/Launch/Resources/Version.h"
 #include "Runtime/SlateCore/Public/Styling/CoreStyle.h"
-#include "RHI/Public/RHI.h"
+#include "Runtime/RHI/Public/RHI.h"
 
 FSlateFontInfo FAgoraViewportText::GetFontInfo() const
 {
