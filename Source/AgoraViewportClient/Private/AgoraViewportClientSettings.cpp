@@ -211,8 +211,9 @@ bool UAgoraViewportClientSettings::Internal_ExecGit(const TCHAR* Params, FString
 
 	int32* ReturnCode = nullptr;
 	return FPlatformProcess::ExecProcess(TEXT("git"), Params, ReturnCode, &OutStdOut, &OutStdErr, *FPaths::ConvertRelativePathToFull(FPaths::ProjectDir()));
-#endif
+#else
 	return false;
+#endif
 }
 
 void UAgoraViewportClientSettings::Internal_SetGit(FOnGitInfoUpdated OnGitInfoUpdated)
