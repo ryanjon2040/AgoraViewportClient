@@ -6,6 +6,8 @@
 
 #include "Engine/DeveloperSettings.h"
 #include "Math/IntPoint.h"
+#include "Runtime/SlateCore/Public/Types/SlateEnums.h"
+#include "Runtime/SlateCore/Public/Fonts/SlateFontInfo.h"
 #include "AgoraViewportClientSettings.generated.h"
 
 USTRUCT(BlueprintType)
