@@ -26,5 +26,11 @@
 				"IOS"
 			]
 		}
+	],
+	"Plugins": [
+		{
+			"Name": "CommonUI",
+			"Enabled": true
+		}
 	]
 }

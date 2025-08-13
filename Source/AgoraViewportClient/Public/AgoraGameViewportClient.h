@@ -4,8 +4,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
-#include "Engine/GameViewportClient.h"
+#include "CommonGameViewportClient.h"
 #include "Runtime/SlateCore/Public/Widgets/SCompoundWidget.h"
 #include "AgoraGameViewportClient.generated.h"
 
@@ -27,7 +26,7 @@ private:
 };
 
 UCLASS()
-class AGORAVIEWPORTCLIENT_API UAgoraGameViewportClient : public UGameViewportClient
+class AGORAVIEWPORTCLIENT_API UAgoraGameViewportClient : public UCommonGameViewportClient
 {
 	GENERATED_BODY()
 	

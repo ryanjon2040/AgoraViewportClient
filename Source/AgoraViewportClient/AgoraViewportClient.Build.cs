@@ -10,12 +10,7 @@ public class AgoraViewportClient : ModuleRules
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 
-#if UE_4_26_OR_LATER
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "DeveloperSettings" });
-#else
-		PublicDependencyModuleNames.AddRange(new string[] { "Core" });
-#endif
-		
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "DeveloperSettings", "CommonUI" });
 		PrivateDependencyModuleNames.AddRange(new string[] { "CoreUObject", "Engine", "Slate", "SlateCore", "RHI", "InputCore", "EngineSettings" } );
 	}
 }
