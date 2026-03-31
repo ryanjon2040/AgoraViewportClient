@@ -14,7 +14,7 @@ public class AgoraViewportClient : ModuleRules
 		IncludeOrderVersion = EngineIncludeOrderVersion.Latest;
 		
 #if UE_4_26_OR_LATER
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "DeveloperSettings" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "DeveloperSettings", "CommonUI" });
 #else
 		PublicDependencyModuleNames.AddRange(new string[] { "Core" });
 #endif
