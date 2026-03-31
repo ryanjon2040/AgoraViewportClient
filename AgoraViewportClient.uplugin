@@ -8,18 +8,15 @@
 	"CreatedBy": "Satheesh Pv (ryanjon2040)",
 	"CreatedByURL": "https://www.patreon.com/ryanjon2040",
 	"DocsURL": "",
-	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/a9ede13e1bf94f349867fa0fd835ca99",
+	"MarketplaceURL": "",
 	"SupportURL": "https://discord.gg/KCputqnKh5",
 	"CanContainContent": false,
-	"IsBetaVersion": false,
-	"IsExperimentalVersion": false,
-	"Installed": false,
 	"Modules": [
 		{
 			"Name": "AgoraViewportClient",
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
-			"WhitelistPlatforms": [
+			"PlatformAllowList": [
 				"Win64",
 				"Mac",
 				"Android",

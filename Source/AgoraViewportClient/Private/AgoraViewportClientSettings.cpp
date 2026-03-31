@@ -4,6 +4,8 @@
 
 #include "AgoraViewportClientSettings.h"
 #include "HardwareInfo.h"
+#include "Async/Async.h"
+#include "Engine/Engine.h"
 #include "GenericPlatform/GenericPlatformDriver.h"
 #include "Runtime/Launch/Resources/Version.h"
 #include "Runtime/SlateCore/Public/Styling/CoreStyle.h"
